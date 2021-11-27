@@ -11,7 +11,7 @@ Challenges:
 - [X] Rewrite Board to use two loops to make the squares instead of hardcoding them.
 - [X] Add a toggle button that lets you sort the moves in either ascending or descending order.
 - [X] When someone wins, highlight the three squares that caused the win.
-- [ ] When no one wins, display a message about the result being a draw.
+- [X] When no one wins, display a message about the result being a draw.
 
 ## Available Scripts
 
