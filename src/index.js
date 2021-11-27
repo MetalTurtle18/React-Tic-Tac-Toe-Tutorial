@@ -4,15 +4,15 @@ import './index.css';
 
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick}>
+        <button className={"square" + (props.isWinner ? " winner" : "")} onClick={props.onClick}>
             {props.value}
         </button>
     );
 }
 
 class Board extends React.Component {
-    renderSquare(i) {
-        return <Square key={i} value={this.props.squares[i]} onClick={() => this.props.onClick(i)}/>;
+    renderSquare(i, winner) {
+        return <Square key={i} value={this.props.squares[i]} isWinner={winner} onClick={() => this.props.onClick(i)}/>;
     }
 
     render() {
@@ -20,7 +20,7 @@ class Board extends React.Component {
         for (let i = 0; i < 3; i++) {
             let row = [];
             for (let j = 0; j < 3; j++)
-                row.push(this.renderSquare(i * 3 + j));
+                row.push(this.renderSquare(i * 3 + j, this.props.winners && this.props.winners.includes(i * 3 + j)));
             board.push(<div key={i} className="board-row">{row}</div>);
         }
         return <div>{board}</div>;
@@ -75,7 +75,8 @@ class Game extends React.Component {
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
-        const winner = calculateWinner(current.squares);
+        const winningSquares = calculateWinner(current.squares);
+        const winner = winningSquares ? winningSquares[0] : null;
 
         const moves = history.map((step, move) => {
             const desc = move ?
@@ -99,7 +100,7 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares} onClick={(i) => this.handleClick(i)}/>
+                    <Board squares={current.squares} winners={winningSquares} onClick={(i) => this.handleClick(i)}/>
                     <button onClick={() => this.reverseHistory()}>
                         {this.state.historyReversed ? "Show normal" : "Show reversed"}
                     </button>
@@ -127,7 +128,7 @@ function calculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return lines[i];
         }
     }
     return null;
